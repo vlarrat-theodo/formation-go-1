@@ -11,17 +11,27 @@ func main() {
 }
 
 func teachToTheodoers(w http.ResponseWriter, r *http.Request) {
-	var (
-		welcomeWord         string
-		firstName, lastName string = "John", "Doe"
-		courseNumber        int    = 1
-	)
+	messageLine1, messageLine2 := getFullMessage()
+	_, _ = fmt.Fprintln(w, messageLine1)
+	_, _ = fmt.Fprintln(w, messageLine2)
+}
 
-	welcomeWord = "Hello"
-	language := "GO"
+func getWelcomeMessage(firstName, lastName string) string {
+	return fmt.Sprintf("Hello %s %s :)", firstName, lastName)
 
-	_, _ = fmt.Fprintf(w, "%s %s %s :)\n", welcomeWord, firstName, lastName)
-	_, _ = fmt.Fprintf(w, "Welcome to %s course #%v!\n", language, courseNumber)
+}
+
+func getCourseMessage(courseNumber int) string {
+	return fmt.Sprintf("Welcome to GO course #%v!", courseNumber)
+}
+
+func getFullMessage() (welcomeMessage, courseMessage string) {
+	firstName, lastName := "John", "Doe"
+	courseNumber := 1
+	welcomeMessage = getWelcomeMessage(firstName, lastName)
+	courseMessage = getCourseMessage(courseNumber)
+
+	return
 }
 
 // Browser output : Hello John Doe :)
