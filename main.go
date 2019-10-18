@@ -11,9 +11,11 @@ func main() {
 }
 
 func teachToTheodoers(w http.ResponseWriter, r *http.Request) {
-	var welcomeWord string
-	var firstName, lastName string = "John", "Doe"
-	var courseNumber int = 1
+	var (
+		welcomeWord         string
+		firstName, lastName string = "John", "Doe"
+		courseNumber        int    = 1
+	)
 
 	welcomeWord = "Hello"
 	language := "GO"
