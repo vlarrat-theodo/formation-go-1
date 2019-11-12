@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 )
@@ -12,13 +13,13 @@ func main() {
 }
 
 type User interface {
-	GetWelcomeMessage() string
+	GetWelcomeMessage() (string, error)
 }
 
 type DefaultUser struct{}
 
-func (d DefaultUser) GetWelcomeMessage() string {
-	return "Hello random user :)"
+func (d DefaultUser) GetWelcomeMessage() (string, error) {
+	return "Hello random user :)", nil
 }
 
 type Theodoer struct {
@@ -26,8 +27,17 @@ type Theodoer struct {
 	LastName  string
 }
 
-func (t Theodoer) GetWelcomeMessage() string {
-	return fmt.Sprintf("Hello %s %s from Theodo :)", t.FirstName, t.LastName)
+func (t Theodoer) GetWelcomeMessage() (string, error) {
+	var (
+		welcomeMessage string
+		err            error
+	)
+	if t.FirstName == "" || t.LastName == "" {
+		err = errors.New("Incomplete information for Theodoer")
+	} else {
+		welcomeMessage = fmt.Sprintf("Hello %s %s from Theodo :)", t.FirstName, t.LastName)
+	}
+	return welcomeMessage, err
 
 }
 
@@ -55,7 +65,12 @@ func getCourseMessage(courseNumber int) string {
 
 func getFullMessage(u User) (welcomeMessage, courseMessage string) {
 	courseNumber := 1
-	welcomeMessage = u.GetWelcomeMessage()
+	tempWelcomeMessage, err := u.GetWelcomeMessage()
+	if err != nil {
+		welcomeMessage = fmt.Sprintf("An error occured: %s", err)
+	} else {
+		welcomeMessage = tempWelcomeMessage
+	}
 	courseMessage = getCourseMessage(courseNumber)
 
 	return
