@@ -23,8 +23,8 @@ func (d DefaultUser) GetWelcomeMessage() (string, error) {
 }
 
 type Theodoer struct {
-	FirstName string
-	LastName  string
+	FirstName *string
+	LastName  *string
 }
 
 func (t Theodoer) GetWelcomeMessage() (string, error) {
@@ -32,10 +32,10 @@ func (t Theodoer) GetWelcomeMessage() (string, error) {
 		welcomeMessage string
 		err            error
 	)
-	if t.FirstName == "" || t.LastName == "" {
+	if t.FirstName == nil || t.LastName == nil {
 		err = errors.New("Incomplete information for Theodoer")
 	} else {
-		welcomeMessage = fmt.Sprintf("Hello %s %s from Theodo :)", t.FirstName, t.LastName)
+		welcomeMessage = fmt.Sprintf("Hello %s %s from Theodo :)", *t.FirstName, *t.LastName)
 	}
 	return welcomeMessage, err
 
@@ -48,9 +48,11 @@ func teachTo(w http.ResponseWriter, r *http.Request, u User) {
 }
 
 func teachToTheodoers(w http.ResponseWriter, r *http.Request) {
+	firstName := "John"
+	lastName := "Doe"
 	theodoer := Theodoer{
-		FirstName: "John",
-		LastName:  "Doe",
+		FirstName: &firstName,
+		LastName:  &lastName,
 	}
 	teachTo(w, r, theodoer)
 }
